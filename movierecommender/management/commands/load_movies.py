@@ -3,6 +3,7 @@ import pandas as pd
 from django.core.management import BaseCommand
 from ...models import Movie
 
+
 class Command(BaseCommand):
     help = 'Load a movie csv file into the database'
 
@@ -14,8 +15,10 @@ class Command(BaseCommand):
         print("Clean old movie data")
         Movie.objects.all().delete()
         path = kwargs['path']
+
         # Read the movie csv file as a dataframe
         movie_df = pd.read_csv(path)
+
         # Iterate each row in the dataframe
         for index, row in movie_df.iterrows():
             imdb_id = row["imdb_id"]
@@ -27,6 +30,7 @@ class Command(BaseCommand):
             vote_average = row["vote_average"]
             vote_count = row["vote_count"]
             poster_path = row["poster_path"]
+
             # Populate Movie object for each row
             movie = Movie(imdb_id=imdb_id,
                             genres=genres,
@@ -37,6 +41,7 @@ class Command(BaseCommand):
                             vote_average=vote_average,
                             vote_count=vote_count,
                             poster_path=poster_path)
+            
             # Save movie object
             movie.save()
             print(f"Movie: {imdb_id}, {original_title} saved...")
